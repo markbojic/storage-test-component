@@ -80,29 +80,30 @@ public class App {
 				System.out.println("help     -     [Displays all commands.]");
 
 				System.out.println("2 - User Operations:");
-				System.out.println("mkusr username password priv1 priv2 priv3 priv4     -     [Create User]");
-				System.out.println("rmusr username     -     [Delete User]");
+				System.out.println("mkusr   username password priv1 priv2 priv3 priv4     -     [Create User]");
+				System.out.println("rmusr   username     -     [Delete User]");
 				System.out.println("lsusr     -     [List All Users]");
 
 				System.out.println("3 - File Operations:");
-				System.out.println("mkf file_name destination_path     -     [Create File]");
-				System.out.println("rmf file_path     -     [Delete File]");
-				System.out.println("upf file_path destination_path     -     [Upload File]");
+				System.out.println("mkf   file_name destination_path     -     [Create File]");
+				System.out.println("mkf   {number} file_name destination_path     -     [Create {number} Files]");
+				System.out.println("rmf   file_path     -     [Delete File]");
+				System.out.println("upf   file_path destination_path     -     [Upload File]");
 				System.out.println(
-						"upmf file1_path file2_path... destination_path archive_name     -     [Upload Multiple Files]");
-				System.out.println("dlf file_path destination_path     -     [Download File]");
+						"upmf   file1_path file2_path... destination_path archive_name     -     [Upload Multiple Files]");
+				System.out.println("dlf   file_path destination_path     -     [Download File]");
 
 				System.out.println("4 - Directory Operations:");
-				System.out.println("mkdir dir_name destination_path     -     [Create Directory]");
-				System.out.println("mkdir {number} dir_name destination_path     -     [Create {number} Directories");
-				System.out.println("rmdir dir_path     -     [Delete Directory]");
-				System.out.println("updir dir_path destination_path     -     [Upload Directory]");
-				System.out.println("updir-z dir_path destination_path     -     [Upload Zipped Directory");
-				System.out.println("dldir dir_path destination_path     -     [Download Directory]");
-				System.out.println("ls-a dir_path     -     [List All Files]");
-				System.out.println("ls dir_path     -     [List Files]");
-				System.out.println("ls-s dir_path extension     -     [List Files With Given Extension]");
-				System.out.println("ls-d dir_path     -     [List Directories]");
+				System.out.println("mkdir   dir_name destination_path     -     [Create Directory]");
+				System.out.println("mkdir   {number} dir_name destination_path     -     [Create {number} Directories");
+				System.out.println("rmdir   dir_path     -     [Delete Directory]");
+				System.out.println("updir   dir_path destination_path     -     [Upload Directory]");
+				System.out.println("updir-z   dir_path destination_path     -     [Upload Zipped Directory");
+				System.out.println("dldir   dir_path destination_path     -     [Download Directory]");
+				System.out.println("ls-a   dir_path     -     [List All Files]");
+				System.out.println("ls   dir_path     -     [List Files]");
+				System.out.println("ls-s   dir_path extension     -     [List Files With Given Extension]");
+				System.out.println("ls-d   dir_path     -     [List Directories]");
 				System.out.println(
 						"If wanting to perform any of the oprations above on the ROOT path, ommit the path from the command and it will automatically be set to the current online storage path! THIS IS SPECIFIC FOR WORKING WITH A REMOTE STORAGE!!!");
 
@@ -124,12 +125,27 @@ public class App {
 			case "mkf":
 				// mkf file_name destination_path
 				// Create File (name, dest_path, user)
-				String[] mkfparts = new String[3];
-				mkfparts = command.split(" ");
-				if (mkfparts[2].equalsIgnoreCase("root"))
-					fm.createFile(mkfparts[1], "", user);
-				else
-					fm.createFile(mkfparts[1], mkfparts[2], user);
+				String[] mkfparts = command.split(" ");
+				if (mkfparts.length == 3) {
+					if (mkfparts[2].equalsIgnoreCase("root"))
+						fm.createFile(mkfparts[1], "", user);
+					else
+						fm.createFile(mkfparts[1], mkfparts[2], user);
+				} else if (mkfparts.length == 4) {
+					String number = mkfparts[1].substring(1, mkfparts[1].length() - 1);
+					int num = Integer.parseInt(number);
+					if (mkfparts[3].equalsIgnoreCase("root")) {
+						for (int i = 1; i <= num; i++) {
+							fm.createFile(mkfparts[2].substring(0, mkfparts[2].indexOf(".")) + i
+									+ mkfparts[2].substring(mkfparts[2].indexOf(".")), "", user);
+						}
+					} else {
+						for (int i = 1; i <= num; i++) {
+							fm.createFile(mkfparts[2].substring(0, mkfparts[2].indexOf(".")) + i
+									+ mkfparts[2].substring(mkfparts[2].indexOf(".")), mkfparts[3], user);
+						}
+					}
+				}
 				break;
 			case "rmf":
 				// rmf file_path

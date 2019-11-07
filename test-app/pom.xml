@@ -21,8 +21,13 @@
 
 		<dependency>
 			<groupId>com.raf.components</groupId>
+			<!--
 			<artifactId>storage-remote</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+			-->
+  			<artifactId>storage-local</artifactId>
+  			<version>0.0.1-SNAPSHOT</version>
+  			
 		</dependency>
 
 		<dependency>

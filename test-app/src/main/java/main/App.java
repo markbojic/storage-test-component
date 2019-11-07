@@ -18,22 +18,22 @@ public class App {
 		System.out.print("Enter storage link: ");
 		Scanner sc = new Scanner(System.in);
 		String storagePath = sc.nextLine();
-		// uzme username i password
+
 		DirectoryManipulation dm = null;
 		FileManipulation fm = null;
+
 		User user = null;
 		boolean accessGranted = false;
-		while(!accessGranted) {
+		while (!accessGranted) {
 			System.out.print("Enter username: ");
 			String username = sc.nextLine();
 			System.out.print("Enter password: ");
 			String password = sc.nextLine();
 			user = new User(username, password);
 
-			
-
 			Reflections reflections = new Reflections("models");
-			Set<Class<? extends DirectoryManipulation>> subTypes = reflections.getSubTypesOf(DirectoryManipulation.class);
+			Set<Class<? extends DirectoryManipulation>> subTypes = reflections
+					.getSubTypesOf(DirectoryManipulation.class);
 			Class<? extends DirectoryManipulation> implementation = ((Class<? extends DirectoryManipulation>) subTypes
 					.toArray()[0]);
 			System.out.println(implementation.getSimpleName());
@@ -42,35 +42,32 @@ public class App {
 			} catch (InstantiationException | IllegalAccessException e) {
 				e.printStackTrace();
 			}
-		
+
 			// Find the implementation for the FileManipulation class
 			Set<Class<? extends FileManipulation>> subTypes2 = reflections.getSubTypesOf(FileManipulation.class);
-			Class<? extends FileManipulation> implementation2 = (Class<? extends FileManipulation>) subTypes2.toArray()[0];
+			Class<? extends FileManipulation> implementation2 = (Class<? extends FileManipulation>) subTypes2
+					.toArray()[0];
 			try {
 				fm = implementation2.newInstance();// Set to first class found that implements FileManipulation
 			} catch (InstantiationException | IllegalAccessException e) {
 				e.printStackTrace();
 			}
 			System.out.println(implementation2.getSimpleName());
-		
-			//Initiate storage with DirectoryClass
-		
+
+			// Initiate storage with DirectoryClass
+
 			dm.initStorage(storagePath, user);
-			if(dm.getRoot() == null) {
+			if (dm.getRoot() == null) {
 				System.out.println("Storage connection failed - Wrong Username or Password!");
-			}
-			else {
+			} else {
 				fm.setForbiddenExtensions(dm.getForbiddenExtensions());
 				fm.setRoot(dm.getRoot());
 				accessGranted = true;
 			}
 		}
-		
-
-		
 
 		// Console parsing
-		
+
 		String command = "";
 		while (true) {
 			System.out.print("Command: ");
@@ -89,7 +86,7 @@ public class App {
 
 				System.out.println("3 - File Operations:");
 				System.out.println("mkf file_name destination_path     -     [Create File]");
-				System.out.println("rmf file_name     -     [Delete File]");
+				System.out.println("rmf file_path     -     [Delete File]");
 				System.out.println("upf file_path destination_path     -     [Upload File]");
 				System.out.println(
 						"upmf file1_path file2_path... destination_path archive_name     -     [Upload Multiple Files]");
@@ -97,8 +94,7 @@ public class App {
 
 				System.out.println("4 - Directory Operations:");
 				System.out.println("mkdir dir_name destination_path     -     [Create Directory]");
-				System.out
-						.println("mkdir {number} dir_name destination_path     -     [Create {number} Directories");
+				System.out.println("mkdir {number} dir_name destination_path     -     [Create {number} Directories");
 				System.out.println("rmdir dir_path     -     [Delete Directory]");
 				System.out.println("updir dir_path destination_path     -     [Upload Directory]");
 				System.out.println("updir-z dir_path destination_path     -     [Upload Zipped Directory");
@@ -119,7 +115,6 @@ public class App {
 				continue;
 			}
 			if (command.equals("lsusr")) {
-				// ovo je jedina komanda bez spejsa
 				user.listAllUsers(dm.getRoot());
 				continue;
 			}
@@ -137,7 +132,7 @@ public class App {
 					fm.createFile(mkfparts[1], mkfparts[2], user);
 				break;
 			case "rmf":
-				// rm file_path
+				// rmf file_path
 				// Delete File (file_path, user)
 				String rmfpath = command.substring(command.indexOf(" ") + 1);
 				fm.deleteFile(rmfpath, user);
@@ -270,10 +265,11 @@ public class App {
 					multipleFiles[j] = upmfparts[i];
 					j++;
 				}
-				if(upmfparts[upmfparts.length - 2].equalsIgnoreCase("root"))
-					fm.uploadMultipleFilesZip(multipleFiles, "", upmfparts[upmfparts.length -1], user);
+				if (upmfparts[upmfparts.length - 2].equalsIgnoreCase("root"))
+					fm.uploadMultipleFilesZip(multipleFiles, "", upmfparts[upmfparts.length - 1], user);
 				else
-					fm.uploadMultipleFilesZip(multipleFiles, upmfparts[upmfparts.length -2], upmfparts[upmfparts.length -1], user);
+					fm.uploadMultipleFilesZip(multipleFiles, upmfparts[upmfparts.length - 2],
+							upmfparts[upmfparts.length - 1], user);
 				break;
 			default:
 				System.out.println("Wrong input! Command does not exist...");

@@ -209,7 +209,7 @@ public class App {
 				// lf path
 				// List Files (path, "all")
 				String[] lsparts = command.split(" ");
-				if (lsparts[2].equalsIgnoreCase("root"))
+				if (lsparts[1].equalsIgnoreCase("root"))
 					dm.listFiles("", lsparts[2]);
 				else
 					dm.listFiles(lsparts[1], lsparts[2]);
